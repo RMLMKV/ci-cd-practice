@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'python:3.11'  // официальный образ Python
+            args '-u'            // чтобы вывод шёл сразу
+        }
+    }
 
     environment {
         VENV_DIR = '.venv'
@@ -15,8 +20,9 @@ pipeline {
         stage('Install dependencies') {
             steps {
                 sh '''
+                    python --version
                     python -m venv $VENV_DIR
-                    . $VENV_DIR/Scripts/activate
+                    . $VENV_DIR/bin/activate
                     pip install --upgrade pip
                     if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
                 '''
@@ -26,7 +32,7 @@ pipeline {
         stage('Run tests') {
             steps {
                 sh '''
-                    . $VENV_DIR/Scripts/activate
+                    . $VENV_DIR/bin/activate
                     python app.py
                 '''
             }
@@ -34,14 +40,14 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                echo "Деплой (заглушка)"
+                echo "🚀 Деплой (пока заглушка)"
             }
         }
     }
 
     post {
         always {
-            echo "Очистка"
+            echo "🧹 Очистка"
             sh 'rm -rf $VENV_DIR'
         }
     }
