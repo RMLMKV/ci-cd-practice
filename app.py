@@ -1,1 +1,1 @@
-print("Hello from Jenkins Python agent!")
+print("Hello from  agent!")
